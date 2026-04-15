@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(pm2:*)"
+      "Bash(pm2:*)",
+      "Bash(npm install *)"
     ]
   }
 }
