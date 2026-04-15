@@ -1,9 +1,19 @@
 const { createClient } = require('@supabase/supabase-js');
 
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_KEY
-);
+let _supabase = null;
+
+function getSupabase() {
+    if (!_supabase) {
+        _supabase = createClient(process.env.VITE_SUPABASE_URL, process.env.VITE_SUPABASE_PUBLISHABLE_KEY);
+    }
+    return _supabase;
+}
+
+const supabase = new Proxy({}, {
+    get(_, prop) {
+        return getSupabase()[prop];
+    }
+});
 
 const now = new Date();
 const pad = n => String(n).padStart(2, '0');

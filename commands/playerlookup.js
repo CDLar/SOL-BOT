@@ -12,6 +12,10 @@ module.exports = {
                 .setRequired(true)),
 
     async execute(interaction) {
+        if (interaction.channelId !== '1493846517016953024') {
+            return interaction.reply({ content: '⚠️ This command can only be used in <#1493846517016953024>.', ephemeral: true });
+        }
+
         const playerName = interaction.options.getString('player', true);
 
         await interaction.deferReply();
@@ -57,10 +61,22 @@ module.exports = {
             .setDescription(`**Alliance:** ${allianceTag}\n**Villages:** ${villages.length} | **Total pop:** ${totalPop.toLocaleString()}`)
             .setColor(0x5865f2);
 
-        const CHUNK = 15;
-        for (let i = 0; i < villageLines.length; i += CHUNK) {
-            const chunk = villageLines.slice(i, i + CHUNK).join('\n');
-            embed.addFields({ name: i === 0 ? 'Villages' : '\u200b', value: chunk });
+        const chunks = [];
+        let current = [];
+        let currentLen = 0;
+        for (const line of villageLines) {
+            if (currentLen + line.length + 1 > 1024 && current.length > 0) {
+                chunks.push(current.join('\n'));
+                current = [];
+                currentLen = 0;
+            }
+            current.push(line);
+            currentLen += line.length + 1;
+        }
+        if (current.length > 0) chunks.push(current.join('\n'));
+
+        for (let i = 0; i < chunks.length; i++) {
+            embed.addFields({ name: i === 0 ? 'Villages' : '\u200b', value: chunks[i] });
         }
 
         await interaction.editReply({ embeds: [embed] });
