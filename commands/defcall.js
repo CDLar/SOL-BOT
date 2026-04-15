@@ -29,6 +29,10 @@ module.exports = {
             option.setName('troops')
                 .setDescription('Total troops required')
                 .setRequired(true))
+        .addStringOption(option =>
+            option.setName('comment')
+                .setDescription('Optional comment')
+                .setRequired(false))
         .setDefaultMemberPermissions(PermissionFlagsBits.Administrator),
 
     async execute(interaction) {
@@ -39,13 +43,15 @@ module.exports = {
         const [x, y] = coords.split('/').map(v => v.trim());
         const eta = interaction.options.getString('eta', true);
         const troops = interaction.options.getInteger('troops', true);
+        const comment = interaction.options.getString('comment');
+        const targetChannel = await interaction.client.channels.fetch('1488781996355485716');
 
         const villageLink = createVillageLink(x, y);
 
         await interaction.deferReply({ ephemeral: false });
 
-        const threadName = `${defender} 🛡 (${troops.toLocaleString()})`;
-        const thread = await interaction.channel.threads.create({
+        const threadName = `${defender} 🛡 (${troops.toLocaleString()}) - ${village} (${x}/${y})`;
+        const thread = await targetChannel.threads.create({
             name: threadName.slice(0, 100),
             autoArchiveDuration: 1440,
             reason: `Defcall created by ${interaction.user.tag}`,
@@ -55,13 +61,18 @@ module.exports = {
         const body = [
             `Defender: ${defender}`,
             `Attacker: ${attacker}`,
-            `Village: ${village}`,
+            `Village: ${village} (${x}/${y})`,
             `Village Link: ${villageLink}`,
-            `ETA: ${eta} (Server time)`,
-            `Amount filled: 0 / ${troops.toLocaleString()}`
+            `Landing Time: ${eta} (Server time)`,
+            `Amount Filled: 0 / ${troops.toLocaleString()}`
         ].join('\n');
 
         await thread.send({ content: body });
+
+        const alertParts = [`@everyone`, `New defcall: <#${thread.id}>`];
+        if (comment) alertParts.push(`\n${comment}`);
+        await targetChannel.send({ content: alertParts.join('\n'), allowedMentions: { parse: ['everyone'] } });
+
         await interaction.editReply({ content: `Created thread <#${thread.id}>` });
     }
 };

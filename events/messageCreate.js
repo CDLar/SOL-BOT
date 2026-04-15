@@ -41,7 +41,7 @@ module.exports = {
 
             if (content.includes('Defender:')) {
                 // Defcall
-                const troopMatch = content.match(/Amount filled:\s*([\d,]+)\s*\/\s*([\d,]+)/);
+                const troopMatch = content.match(/Amount Filled:\s*([\d,]+)\s*\/\s*([\d,]+)/);
                 let current = parseInt(troopMatch[1].replace(/,/g, ''), 10);
                 const goal = parseInt(troopMatch[2].replace(/,/g, ''), 10);
 
@@ -51,8 +51,8 @@ module.exports = {
                 const remaining = Math.max(goal - current, 0);
 
                 const updatedContent = content.replace(
-                    /Amount filled:\s*[\d,]+\s*\/\s*[\d,]+/,
-                    `Amount filled: ${current.toLocaleString()} / ${goal.toLocaleString()}`
+                    /Amount Filled:\s*[\d,]+\s*\/\s*[\d,]+/,
+                    `Amount Filled: ${current.toLocaleString()} / ${goal.toLocaleString()}`
                 );
 
                 await originalBotMessage.edit(updatedContent);
