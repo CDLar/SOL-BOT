@@ -40,7 +40,11 @@ module.exports = {
         const attacker = interaction.options.getString('attacker', true);
         const village = interaction.options.getString('village', true);
         const coords = interaction.options.getString('coords', true);
-        const [x, y] = coords.split('/').map(v => v.trim());
+        const [x, y] = coords.split(/[\/|]/).map(v => v.trim());
+        if (!x || !y) {
+            await interaction.reply({ content: 'Invalid coordinates. Use format `x/y` or `x|y` (e.g. `46/7`).', ephemeral: true });
+            return;
+        }
         const eta = interaction.options.getString('eta', true);
         const troops = interaction.options.getInteger('troops', true);
         const comment = interaction.options.getString('comment');
