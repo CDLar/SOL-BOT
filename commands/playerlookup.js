@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { supabase, DAILY_TABLE } = require('../utils/supabase');
+const { supabase, getDailyTable } = require('../utils/supabase');
 const { createVillageLink } = require('../utils/createVillageLink');
 
 module.exports = {
@@ -21,7 +21,7 @@ module.exports = {
         await interaction.deferReply();
 
         const { data, error } = await supabase
-            .from(DAILY_TABLE)
+            .from(getDailyTable())
             .select('X, Y, "Village name", "Player name", "Alliance Tag", Population, Tribe, Capital')
             .ilike('"Player name"', playerName)
             .limit(100);

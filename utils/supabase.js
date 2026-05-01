@@ -15,9 +15,11 @@ const supabase = new Proxy({}, {
     }
 });
 
-const now = new Date();
 const pad = n => String(n).padStart(2, '0');
 
-const DAILY_TABLE = `eu9_${now.getUTCFullYear()}_${pad(now.getUTCMonth() + 1)}_${pad(now.getUTCDate())}`;
+function getDailyTable() {
+    const now = new Date();
+    return `eu9_${now.getUTCFullYear()}_${pad(now.getUTCMonth() + 1)}_${pad(now.getUTCDate())}`;
+}
 
-module.exports = { supabase, DAILY_TABLE };
+module.exports = { supabase, getDailyTable };
