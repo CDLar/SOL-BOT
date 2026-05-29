@@ -12,10 +12,6 @@ module.exports = {
                 .setRequired(true)),
 
     async execute(interaction) {
-        if (interaction.channelId !== '1493846517016953024') {
-            return interaction.reply({ content: '⚠️ This command can only be used in <#1493846517016953024>.', ephemeral: true });
-        }
-
         const playerName = interaction.options.getString('player', true);
 
         await interaction.deferReply();

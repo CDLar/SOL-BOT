@@ -4,7 +4,7 @@ const { createVillageLink } = require('../utils/createVillageLink');
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('respush')
-        .setDescription('Create a resource push thread')
+        .setDescription('Create a resource push channel')
         .addStringOption(option =>
             option.setName('name')
                 .setDescription('Name of the person receiving resources')
@@ -20,6 +20,10 @@ module.exports = {
         .addIntegerOption(option =>
             option.setName('res')
                 .setDescription('Total resource goal')
+                .setRequired(true))
+        .addStringOption(option =>
+            option.setName('title')
+                .setDescription('Channel name (e.g. john-500k)')
                 .setRequired(true)),
 
     async execute(interaction) {
@@ -28,17 +32,19 @@ module.exports = {
         const coords = interaction.options.getString('coords', true);
         const [x, y] = coords.split('/').map(v => v.trim());
         const res = interaction.options.getInteger('res', true);
+        const title = interaction.options.getString('title', true);
 
         const villageLink = createVillageLink(x, y);
 
-        await interaction.deferReply({ ephemeral: false });
+        await interaction.deferReply({ ephemeral: true });
 
-        const threadName = `${name} 🌾 (${res.toLocaleString()})`;
-        const thread = await interaction.channel.threads.create({
-            name: threadName.slice(0, 100),
-            autoArchiveDuration: 1440,
-            reason: `Respush created by ${interaction.user.tag}`,
-            type: ChannelType.PublicThread
+        const channelName = title;
+
+        const channel = await interaction.guild.channels.create({
+            name: channelName,
+            type: ChannelType.GuildText,
+            parent: process.env.RESPUSH_CATEGORY_ID,
+            reason: `Respush created by ${interaction.user.tag}`
         });
 
         const body = [
@@ -48,7 +54,7 @@ module.exports = {
             `Resources: 0 / ${res.toLocaleString()}`
         ].join('\n');
 
-        await thread.send({ content: body });
-        await interaction.editReply({ content: `Created resource push thread <#${thread.id}>` });
+        await channel.send({ content: body });
+        await interaction.editReply({ content: `Created resource push channel <#${channel.id}>` });
     }
 };
