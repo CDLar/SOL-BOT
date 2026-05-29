@@ -6,7 +6,11 @@
       "Bash(Get-ChildItem -Path \"C:\\\\Users\\\\curti\\\\Documents\\\\Projects\\\\WARLOCK_BOT\" -Recurse -Force)",
       "Bash(Select-Object -First 100)",
       "Bash(Format-Table -Property FullName, PSIsContainer)",
-      "Bash(del *)"
+      "Bash(del *)",
+      "Bash(git remote *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git push *)"
     ]
   }
 }
