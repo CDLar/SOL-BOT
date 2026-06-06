@@ -70,6 +70,11 @@ module.exports = {
                 let current = parseInt(resMatch[1].replace(/,/g, ''), 10);
                 const goal = parseInt(resMatch[2].replace(/,/g, ''), 10);
 
+                if (current >= goal) {
+                    await message.channel.send('Thanks, but this push is already complete! Try checking others.');
+                    return;
+                }
+
                 current = operator === '+' ? current + amount : current - amount;
                 if (current < 0) current = 0;
                 const remaining = Math.max(goal - current, 0);
@@ -78,14 +83,31 @@ module.exports = {
                     /Resources:\s*[\d,]+\s*\/\s*[\d,]+/,
                     `Resources: ${current.toLocaleString()} / ${goal.toLocaleString()}`
                 ));
-                await message.channel.send(`🌾 Resources ${operator === '+' ? 'increased' : 'decreased'} by ${amount.toLocaleString()} (${remaining.toLocaleString()} remaining)`);
+                const villageLinkMatch = content.match(/Village Link:\s*(\S+)/);
+                const villageLinkSuffix = villageLinkMatch ? `\n🛖 ${villageLinkMatch[1]}` : '';
+                await message.channel.send(`🌾 Resources ${operator === '+' ? 'increased' : 'decreased'} by ${amount.toLocaleString()} (${remaining.toLocaleString()} remaining)${villageLinkSuffix}`);
 
                 if (current >= goal) {
                     if (!message.channel.name.startsWith('✅-')) {
                         await message.channel.setName(`✅-${message.channel.name}`).catch(() => { });
                     }
+                    const gifs = [
+                        'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExcnM1Zjh5Y3l3ZW5tazRtaHVheGJ1aWc1Z3ZmeDRoMGNyNjE4ZjR4eCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/JJfkt7QEKRvMY6JwDL/giphy.gif',
+                        'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExZjczZXBkeHM2em10MnRwbjB6ODY4Mm8wb2wxZzF1a2MxanBhNTJjOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MZppavoFOeIlrcWMfK/giphy.gif',
+                        'https://media1.giphy.com/media/v1.Y2lkPTc5MGI3NjExczl0OG04ZjhvbjNwdnl5bjE2dDJkZWM1aHBqemVlcXA5dWFrc2QwYSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l3q2Kgm3KOBUE6wF2/giphy.gif',
+                        'https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExNmd3bWQ5bG1iaDN0YWg4dGNnbTY5M2ZuNDczcmJ3enIxbjBuZTV0ZSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/l1EtkTvcg8biz3Vza/giphy.gif',
+                        'https://media3.giphy.com/media/v1.Y2lkPTc5MGI3NjExaHBkMzFjeHAwbTNrM3RoYXB4eWdia2F6emsxNWJpdXNlam9kNWVmNSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/MfTW6bkRhvFzbAZO1p/giphy.gif',
+                        'https://tenor.com/fwh5Zj0HmxI.gif',
+                        'https://tenor.com/bJqqM.gif',
+                        'https://tenor.com/9Sq7.gif',
+                        'https://tenor.com/bkgNK.gif',
+                        'https://tenor.com/bWV88.gif',
+                        'https://tenor.com/enwQKHqnfp4.gif',
+                        'https://tenor.com/boh8j.gif',
+                    ];
+                    const gif = gifs[Math.floor(Math.random() * gifs.length)];
                     await message.channel.send('✅ Goal reached - This push is now closed!');
-                    await message.channel.send('https://tenor.com/view/jessica-barth-open-closed-open-closed-hot-gif-22030122');
+                    await message.channel.send(gif);
                 }
             }
 
