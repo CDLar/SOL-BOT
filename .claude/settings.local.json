@@ -11,7 +11,8 @@
       "Bash(git add *)",
       "Bash(git commit *)",
       "Bash(git push *)",
-      "Bash(dir C:\\\\Users\\\\curti\\\\Documents\\\\Projects\\\\WARLOCK_BOT\\\\*.js)"
+      "Bash(dir C:\\\\Users\\\\curti\\\\Documents\\\\Projects\\\\WARLOCK_BOT\\\\*.js)",
+      "Bash(Get-ChildItem C:UserscurtiDocumentsProjectsWARLOCK_BOT *)"
     ]
   }
 }
