@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
-const { supabase, getDailyTable } = require('../utils/supabase');
+const { supabase } = require('../utils/supabase');
 const { createVillageLink } = require('../utils/createVillageLink');
 
 module.exports = {
@@ -17,9 +17,9 @@ module.exports = {
         await interaction.deferReply();
 
         const { data, error } = await supabase
-            .from(getDailyTable())
-            .select('X, Y, "Village name", "Player name", "Alliance Tag", Population, Tribe, Capital')
-            .ilike('"Player name"', playerName)
+            .from('village_latest_eu9')
+            .select('x, y, village_name, player_name, alliance_tag, population, tribe, is_capital')
+            .ilike('player_name', playerName)
             .limit(100);
 
         if (error) {
@@ -31,13 +31,13 @@ module.exports = {
         }
 
         const villages = data.map(row => ({
-            x: Number(row.X),
-            y: Number(row.Y),
-            name: row['Village name'] ?? '',
-            playerName: row['Player name'] ?? '',
-            allianceTag: row['Alliance Tag'] ?? '',
-            population: Number(row.Population),
-            isCapital: Boolean(row.Capital),
+            x: Number(row.x),
+            y: Number(row.y),
+            name: row.village_name ?? '',
+            playerName: row.player_name ?? '',
+            allianceTag: row.alliance_tag ?? '',
+            population: Number(row.population),
+            isCapital: Boolean(row.is_capital),
         }));
 
         villages.sort((a, b) => b.population - a.population);
